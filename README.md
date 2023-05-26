@@ -102,23 +102,33 @@ This query returns a list of `Concept` objects.
   <summary>Filter entity lists</summary>
     Filters narrow the list down to just entities that meet a particular condition--specifically, a particular value for a particular attribute.
     A list of filters are set using the filter parameter, formatted like this: filter=attribute:value,attribute2:value2. Examples:
+    
     Get the works whose type is book:
     https://api.openalex.org/works?filter=type:book
+    
     Get the authors whose name is Einstein:
     https://api.openalex.org/authors?filter=display_name.search:einstein``
+    
     Filters are case-insensitive.
+    
     ### Logical expressions
+    
     #### Inequality
     For numerical filters, use the less-than (<) and greater-than (>) symbols to filter by inequalities. Example:
+    
     Get sources that host more than 1000 works:
     https://api.openalex.org/sources?filter=works_count:>1000
+    
     Some attributes have special filters that act as syntactic sugar around commonly-expressed inequalities: for example, the from_publication_date filter on works. See the endpoint-specific documentation below for more information. Example:
+    
     Get all works published between 2022-01-01 and 2022-01-26 (inclusive):
     https://api.openalex.org/works?filter=from_publication_date:2022-01-01,to_publication_date:2022-01-26
+    
     #### Negation (NOT)
     You can negate any filter, numerical or otherwise, by prepending the exclamation mark symbol (!) to the filter value. Example:
     Get all institutions except for ones located in the US:
     https://api.openalex.org/institutions?filter=country_code:!us``
+    
     #### Intersection (AND)
     By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
     Get all works that have been cited more than once and are free to read:
@@ -128,6 +138,7 @@ This query returns a list of `Concept` objects.
     You can repeat a filter to create an AND query within a single attribute. Example:
     Get all works that have concepts "Medicine" and "Artificial Intelligence":
     https://api.openalex.org/works?filter=concepts.id:C71924100,concepts.id:C154945302``
+    
     #### Addition (OR)
     Use the pipe symbol (|) to input lists of values such that any of the values can be satisfied--in other words, when you separate filter values with a pipe, they'll be combined as an OR query. Example:
     Get all the works that have an author from France or an author from the UK:
@@ -141,9 +152,13 @@ This query returns a list of `Concept` objects.
 <details>
   <summary>Search entities</summary>
     ### The search parameter
+    
     The search query parameter finds results that match a given text search. Example:
+    
     Get works with search term "dna" in the title, abstract, or fulltext:
+    
     https://api.openalex.org/works?search=dna
+    
     When you search works, the API looks for matches in titles, abstracts, and fulltext. When you search concepts, we look in each concept's display_name and
     description fields. When you search sources, we look at the display_name, alternate_titles, and abbreviated_title fields. Searching authors or institutions will looks for matches
     within each entities' display_name field.
@@ -152,20 +167,20 @@ This query returns a list of `Concept` objects.
 <details>
   <summary>Search entities</summary>
     ### Sort entity lists
+    
     Use the ?sort parameter to specify the property you want your list sorted by. You can sort by these properties, where they exist:
+    
     display_name
+    
     cited_by_count
+    
     works_count
+    
     publication_date
-    relevance_score (only exists if there's a  active)
     By default, sort direction is ascending. You can reverse this by appending :desc to the sort key like works_count:desc. You can sort by multiple properties by providing multiple sort keys, separated by commas. Examples:
     * All works, sorted by cited_by_count (highest counts first)
     
     * All sources, in alphabetical order by title:
-    
-    * You can sort by relevance_score when searching:
-    Sort by year, then by relevance_score when searching for "bioplastics":
-    
 </details>
 
 
