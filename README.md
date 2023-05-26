@@ -59,41 +59,119 @@ Go to [our shared google Drive space](https://drive.google.com/drive/folders/1rx
 ## Functional Design (Usage)
 Describe all functions / classes that will be available to users of your module. This section should be oriented towards users who want to _apply_ your module! This means that you should **not** include internal functions that won't be useful to the user in this section. You can think of this section as a documentation for the functions of your package. Be sure to also include a short description of what task each function is responsible for if it is not apparent. You only need to provide the outline of what your function will input and output. You do not need to write the pseudo code of the body of the functions. 
 
-* Takes as input a list of strings, each representing a document and outputs confidence scores for each possible class / field in a dictionary
-```python
-    def classify_docs(docs: list[str]):
-        ... 
-        return [
-            { 'cs': cs_score, 'math': math_score, ..., 'chemistry': chemistry_score },
-            ...
-        ]
+### Get a single entity, based on an ID
+To get a single entity object from from the API:/<entity_name>/<entity_id>. Here's an example:
+Get the work with the OpenAlex ID W2741809807: https://127.0.0.1/works/W3127800895
+#### Get a random result
+You can get a random result from the API:/<entity_name>/random . You'll get a different entity.  Examples:
+Get a random institution:
+https://127.0.0.1/institutions/random
+Get a random concept:
+https://127.0.0.1/concepts/random
+
+#### Select fields
+You can use select to choose top-level fields you want to see in a result.
+Display id and display_name for a work.
+
+https://127.0.0.1/works/W3127800895?select=id,display_name
 ```
 
-* Outputs the weights as a numpy array of shape `(num_classes, num_features)` of the trained neural network 
-```python
-    def get_nn_weights():
-        ...
-        return W
+{
+    "display_name":"Impact of COVID-19 pandemic on mobility in ten countries and associated perceived risk for all transport modes",
+    "id":"https://openalex.org/W3127800895"
+}
 ```
+
+### Get lists of entities
+
+To get a list of entity objects from the API:`/<entity_name>`:
+https://127.0.0.1.openalex.org/concepts.
+This query returns a list of `Concept` objects.
+
+<details>
+  <summary>Paging</summary>
+    Use the page query parameter to control which page of results you want (eg page=1, page=2, etc). By default there are 25 results per page; you can use the
+    per-page parameter to change that to any number between 1 and 200.
+    Get the 2nd page of a list:
+    http://127.0.0.1:5000/authors?page=2
+    Get 200 results on the second page:
+    http://127.0.0.1:5000/authors?page=2&per-page=200
+</details>
+
+<details>
+  <summary>Filter entity lists</summary>
+    Filters narrow the list down to just entities that meet a particular condition--specifically, a particular value for a particular attribute.
+    A list of filters are set using the filter parameter, formatted like this: filter=attribute:value,attribute2:value2. Examples:
+    Get the works whose type is book:
+    https://api.openalex.org/works?filter=type:book
+    Get the authors whose name is Einstein:
+    https://api.openalex.org/authors?filter=display_name.search:einstein``
+    Filters are case-insensitive.
+    ### Logical expressions
+    #### Inequality
+    For numerical filters, use the less-than (<) and greater-than (>) symbols to filter by inequalities. Example:
+    Get sources that host more than 1000 works:
+    https://api.openalex.org/sources?filter=works_count:>1000
+    Some attributes have special filters that act as syntactic sugar around commonly-expressed inequalities: for example, the from_publication_date filter on works. See the endpoint-specific documentation below for more information. Example:
+    Get all works published between 2022-01-01 and 2022-01-26 (inclusive):
+    https://api.openalex.org/works?filter=from_publication_date:2022-01-01,to_publication_date:2022-01-26
+    #### Negation (NOT)
+    You can negate any filter, numerical or otherwise, by prepending the exclamation mark symbol (!) to the filter value. Example:
+    Get all institutions except for ones located in the US:
+    https://api.openalex.org/institutions?filter=country_code:!us``
+    #### Intersection (AND)
+    By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
+    Get all works that have been cited more than once and are free to read:
+    https://api.openalex.org/works?filter=cited_by_count:>1,is_oa:true``
+    Get all the works that have an author from France and an author from the UK:
+    https://api.openalex.org/works?filter=institutions.country_code:fr,institutions.country_code:gb``
+    You can repeat a filter to create an AND query within a single attribute. Example:
+    Get all works that have concepts "Medicine" and "Artificial Intelligence":
+    https://api.openalex.org/works?filter=concepts.id:C71924100,concepts.id:C154945302``
+    #### Addition (OR)
+    Use the pipe symbol (|) to input lists of values such that any of the values can be satisfied--in other words, when you separate filter values with a pipe, they'll be combined as an OR query. Example:
+    Get all the works that have an author from France or an author from the UK:
+    https://api.openalex.org/works?filter=institutions.country_code:fr|gb``
+    This is particularly useful when you want to retrieve a many records by ID all at once. Instead of making a whole bunch of singleton calls in a loop, you can make one call, like this:
+    Get the works with DOI 10.1371/journal.pone.0266781 or with DOI 10.1371/journal.pone.0267149 (note the pipe separator between the two DOIs):
+    https://api.openalex.org/works?filter=doi:https://doi.org/10.1371/journal.pone.0266781|https://doi.org/10.1371/journal.pone.0267149
+    #### Available filters
+</details>
+
+<details>
+  <summary>Search entities</summary>
+    ### The search parameter
+    The search query parameter finds results that match a given text search. Example:
+    Get works with search term "dna" in the title, abstract, or fulltext:
+    https://api.openalex.org/works?search=dna
+    When you search works, the API looks for matches in titles, abstracts, and fulltext. When you search concepts, we look in each concept's display_name and
+    description fields. When you search sources, we look at the display_name, alternate_titles, and abbreviated_title fields. Searching authors or institutions will looks for matches
+    within each entities' display_name field.
+</details>
+    
+<details>
+  <summary>Search entities</summary>
+    ### Sort entity lists
+    Use the ?sort parameter to specify the property you want your list sorted by. You can sort by these properties, where they exist:
+    display_name
+    cited_by_count
+    works_count
+    publication_date
+    relevance_score (only exists if there's a  active)
+    By default, sort direction is ascending. You can reverse this by appending :desc to the sort key like works_count:desc. You can sort by multiple properties by providing multiple sort keys, separated by commas. Examples:
+    * All works, sorted by cited_by_count (highest counts first)
+    
+    * All sources, in alphabetical order by title:
+    
+    * You can sort by relevance_score when searching:
+    Sort by year, then by relevance_score when searching for "bioplastics":
+    
+</details>
+
+
 
 ## Demo video
 Make sure to include a video showing your module in action and how to use it in this section. Github Pages doesn't support this so I am unable to do this here. However, this can be done in your README.md files of your own repo. Follow instructions [here](https://stackoverflow.com/questions/4279611/how-to-embed-a-video-into-github-readme-md) of the accepted answer 
-
-
-## Algorithmic Design 
-This section should contain a detailed description of all different components and models that you will be using to achieve your task as well as a diagram. Here is a very basic example of what you should include:
-
-We generate vector representations for each document using BERT, we then train a simple, single-layer fully connected neural network using the documents and labels from the training set.
-
-First, we select a set of labeled text documents `d_1, d_2, …, d_N` from the arxiv dataset available on Kaggle. The documents are randomly partitioned into two sets for training and testing. We use the BERT language model's output as the input to the neural network. Only the weights of the neural network are modified during training. 
-
-After training, we run the trained model to classify the test documents into one of the classes in C. Below is a picture of the architecture of the module. The diagram below was constructed using draw.io 
-
-
-![design architecture](https://github.com/Forward-UIUC-2021F/guidelines/blob/main/template_diagrams/sample-design.png)
-
-
-
 
 
 ## Issues and Future Work
