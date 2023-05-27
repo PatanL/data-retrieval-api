@@ -87,9 +87,9 @@ This query returns a list of `Concept` objects.
     Use the page query parameter to control which page of results you want (eg page=1, page=2, etc). By default there are 25 results per page; you can use the
     per-page parameter to change that to any number between 1 and 200.
     Get the 2nd page of a list:
-    http://127.0.0.1:5000/authors?page=2
+    http://hawk5.csl.illinois.edu:5000/authors?page=2
     Get 200 results on the second page:
-    http://127.0.0.1:5000/authors?page=2&per-page=200
+    http://hawk5.csl.illinois.edu:5000/authors?page=2&per-page=200
 </details>
 
 <details>
@@ -97,11 +97,8 @@ This query returns a list of `Concept` objects.
     Filters narrow the list down to just entities that meet a particular condition--specifically, a particular value for a particular attribute.
     A list of filters are set using the filter parameter, formatted like this: filter=attribute:value,attribute2:value2. Examples:
     
-    Get the works whose type is book:
-    https://api.openalex.org/works?filter=type:book
-    
-    Get the authors whose name is Einstein:
-    https://api.openalex.org/authors?filter=display_name.search:einstein``
+    Get the authors whose name is John Smith:
+    http://hawk5.csl.illinois.edu:5000/authors?filter=display_name.search:einstein``
     
     Filters are case-insensitive.
     
@@ -110,8 +107,8 @@ This query returns a list of `Concept` objects.
     #### Inequality
     For numerical filters, use the less-than (<) and greater-than (>) symbols to filter by inequalities. Example:
     
-    Get sources that host more than 1000 works:
-    https://api.openalex.org/sources?filter=works_count:>1000
+    Get authors that have more than 10000 citations:
+    http://hawk5.csl.illinois.edu:5000/authors?filter=cited_by_count:>10000
     
     Some attributes have special filters that act as syntactic sugar around commonly-expressed inequalities: for example, the from_publication_date filter on works. See the endpoint-specific documentation below for more information. Example:
     
