@@ -123,17 +123,17 @@ This query returns a list of `Concept` objects.
     #### Intersection (AND)
     By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
     Get all works that have been cited more than once and are free to read:
-    http://hawk5.csl.illinois.edu:5000/works?filter=cited_by_count:>100,is_oa:true``
+    http://hawk5.csl.illinois.edu:5000/works?filter=cited_by_count:>1
     Get all the works that have an author from France and an author from the UK:
-    https://api.openalex.org/works?filter=institutions.country_code:fr,institutions.country_code:gb``
+    
     You can repeat a filter to create an AND query within a single attribute. Example:
     Get all works that have concepts "Medicine" and "Artificial Intelligence":
-    https://api.openalex.org/works?filter=concepts.id:C71924100,concepts.id:C154945302``
+    
     
     #### Addition (OR)
     Use the pipe symbol (|) to input lists of values such that any of the values can be satisfied--in other words, when you separate filter values with a pipe, they'll be combined as an OR query. Example:
     Get all the works that have an author from France or an author from the UK:
-    http://hawk5.csl.illinois.edu:5000/works?filter=institutions.country_code:fr|gb``
+    
     This is particularly useful when you want to retrieve a many records by ID all at once. Instead of making a whole bunch of singleton calls in a loop, you can make one call, like this:
     Get the works with DOI 10.1371/journal.pone.0266781 or with DOI 10.1371/journal.pone.0267149 (note the pipe separator between the two DOIs):
     https://api.openalex.org/works?filter=doi:https://doi.org/10.1371/journal.pone.0266781|https://doi.org/10.1371/journal.pone.0267149
