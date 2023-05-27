@@ -61,19 +61,13 @@ Describe all functions / classes that will be available to users of your module.
 
 ### Get a single entity, based on an ID
 To get a single entity object from from the API:/<entity_name>/<entity_id>. Here's an example:
-Get the work with the OpenAlex ID W2741809807: https://127.0.0.1/works/W3127800895
-#### Get a random result
-You can get a random result from the API:/<entity_name>/random . You'll get a different entity.  Examples:
-Get a random institution:
-https://127.0.0.1/institutions/random
-Get a random concept:
-https://127.0.0.1/concepts/random
+Get the work with the OpenAlex ID W2741809807: http://hawk5.csl.illinois.edu:5000/works/W3127800895
 
 #### Select fields
 You can use select to choose top-level fields you want to see in a result.
 Display id and display_name for a work.
 
-https://127.0.0.1/works/W3127800895?select=id,display_name
+http://hawk5.csl.illinois.edu:5000/works/W3127800895?select=id,display_name
 ```
 
 {
