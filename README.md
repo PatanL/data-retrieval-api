@@ -98,7 +98,7 @@ This query returns a list of `Concept` objects.
     A list of filters are set using the filter parameter, formatted like this: filter=attribute:value,attribute2:value2. Examples:
     
     Get the authors whose name is John Smith:
-    http://hawk5.csl.illinois.edu:5000/authors?filter=display_name.search:einstein``
+    http://hawk5.csl.illinois.edu:5000/authors?filter=display_name.search:einstein
     
     Filters are case-insensitive.
     
@@ -112,18 +112,18 @@ This query returns a list of `Concept` objects.
     
     Some attributes have special filters that act as syntactic sugar around commonly-expressed inequalities: for example, the from_publication_date filter on works. See the endpoint-specific documentation below for more information. Example:
     
-    Get all works published between 2022-01-01 and 2022-01-26 (inclusive):
-    https://api.openalex.org/works?filter=from_publication_date:2022-01-01,to_publication_date:2022-01-26
+    Get all works published after 2022-01-01 (inclusive):
+    http://hawk5.csl.illinois.edu:5000/works?filter=from_publication_date:2022-01-01
     
     #### Negation (NOT)
     You can negate any filter, numerical or otherwise, by prepending the exclamation mark symbol (!) to the filter value. Example:
     Get all institutions except for ones located in the US:
-    https://api.openalex.org/institutions?filter=country_code:!us``
+    http://hawk5.csl.illinois.edu:5000/institutions?filter=country_code:!us``
     
     #### Intersection (AND)
     By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
     Get all works that have been cited more than once and are free to read:
-    https://api.openalex.org/works?filter=cited_by_count:>1,is_oa:true``
+    http://hawk5.csl.illinois.edu:5000/works?filter=cited_by_count:>100,is_oa:true``
     Get all the works that have an author from France and an author from the UK:
     https://api.openalex.org/works?filter=institutions.country_code:fr,institutions.country_code:gb``
     You can repeat a filter to create an AND query within a single attribute. Example:
@@ -133,7 +133,7 @@ This query returns a list of `Concept` objects.
     #### Addition (OR)
     Use the pipe symbol (|) to input lists of values such that any of the values can be satisfied--in other words, when you separate filter values with a pipe, they'll be combined as an OR query. Example:
     Get all the works that have an author from France or an author from the UK:
-    https://127.0.0.1/works?filter=institutions.country_code:fr|gb``
+    http://hawk5.csl.illinois.edu:5000/works?filter=institutions.country_code:fr|gb``
     This is particularly useful when you want to retrieve a many records by ID all at once. Instead of making a whole bunch of singleton calls in a loop, you can make one call, like this:
     Get the works with DOI 10.1371/journal.pone.0266781 or with DOI 10.1371/journal.pone.0267149 (note the pipe separator between the two DOIs):
     https://api.openalex.org/works?filter=doi:https://doi.org/10.1371/journal.pone.0266781|https://doi.org/10.1371/journal.pone.0267149
