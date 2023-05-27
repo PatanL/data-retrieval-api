@@ -142,7 +142,7 @@ This query returns a list of `Concept` objects.
     #### Addition (OR)
     Use the pipe symbol (|) to input lists of values such that any of the values can be satisfied--in other words, when you separate filter values with a pipe, they'll be combined as an OR query. Example:
     Get all the works that have an author from France or an author from the UK:
-    https://api.openalex.org/works?filter=institutions.country_code:fr|gb``
+    https://127.0.0.1/works?filter=institutions.country_code:fr|gb``
     This is particularly useful when you want to retrieve a many records by ID all at once. Instead of making a whole bunch of singleton calls in a loop, you can make one call, like this:
     Get the works with DOI 10.1371/journal.pone.0266781 or with DOI 10.1371/journal.pone.0267149 (note the pipe separator between the two DOIs):
     https://api.openalex.org/works?filter=doi:https://doi.org/10.1371/journal.pone.0266781|https://doi.org/10.1371/journal.pone.0267149
@@ -155,9 +155,9 @@ This query returns a list of `Concept` objects.
     
     The search query parameter finds results that match a given text search. Example:
     
-    Get works with search term "dna" in the title, abstract, or fulltext:
+    Get works with search term "dna" in the title or abstract:
     
-    https://api.openalex.org/works?search=dna
+    https://127.0.0.1/works?search=dna
     
     When you search works, the API looks for matches in titles, abstracts, and fulltext. When you search concepts, we look in each concept's display_name and
     description fields. When you search sources, we look at the display_name, alternate_titles, and abbreviated_title fields. Searching authors or institutions will looks for matches
