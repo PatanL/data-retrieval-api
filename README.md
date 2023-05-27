@@ -156,7 +156,7 @@ This query returns a list of `Concept` objects.
 </details>
     
 <details>
-  <summary>Search entities</summary>
+  <summary>Sort entities</summary>
     ### Sort entity lists
     
     Use the ?sort parameter to specify the property you want your list sorted by. You can sort by these properties, where they exist:
