@@ -79,7 +79,7 @@ http://hawk5.csl.illinois.edu:5000/works/W3127800895?select=id,display_name
 ### Get lists of entities
 
 To get a list of entity objects from the API:`/<entity_name>`:
-https://127.0.0.1.openalex.org/concepts.
+http://hawk5.csl.illinois.edu:5000/concepts.
 This query returns a list of `Concept` objects.
 
 <details>
@@ -136,7 +136,7 @@ This query returns a list of `Concept` objects.
     
     This is particularly useful when you want to retrieve a many records by ID all at once. Instead of making a whole bunch of singleton calls in a loop, you can make one call, like this:
     Get the works with DOI 10.1371/journal.pone.0266781 or with DOI 10.1371/journal.pone.0267149 (note the pipe separator between the two DOIs):
-    https://api.openalex.org/works?filter=doi:https://doi.org/10.1371/journal.pone.0266781|https://doi.org/10.1371/journal.pone.0267149
+    http://hawk5.csl.illinois.edu:5000/works?filter=doi:https://doi.org/10.1371/journal.pone.0266781|https://doi.org/10.1371/journal.pone.0267149
     #### Available filters
 </details>
 
@@ -148,7 +148,7 @@ This query returns a list of `Concept` objects.
     
     Get works with search term "dna" in the title or abstract:
     
-    https://127.0.0.1/works?search=dna
+    http://hawk5.csl.illinois.edu:5000/works?search=dna
     
     When you search works, the API looks for matches in titles, abstracts, and fulltext. When you search concepts, we look in each concept's display_name and
     description fields. When you search sources, we look at the display_name, alternate_titles, and abbreviated_title fields. Searching authors or institutions will looks for matches
@@ -170,8 +170,10 @@ This query returns a list of `Concept` objects.
     publication_date
     By default, sort direction is ascending. You can reverse this by appending :desc to the sort key like works_count:desc. You can sort by multiple properties by providing multiple sort keys, separated by commas. Examples:
     * All works, sorted by cited_by_count (highest counts first)
+    http://hawk5.csl.illinois.edu:5000/works?sort=cited_by_count
     
     * All sources, in alphabetical order by title:
+    http://hawk5.csl.illinois.edu:5000/works?sort=display_name
 </details>
 
 
@@ -184,10 +186,10 @@ Make sure to include a video showing your module in action and how to use it in 
 
 In this section, please list all know issues, limitations, and possible areas for future improvement. For example:
 
-* High false negative rate for document classier. 
-* Over 10 min run time for one page text.
-* Replace linear text search with a more efficient text indexing library (such as whoosh)
-* Include an extra label of "no class" if all confidence scores low. 
+* Add multi-column indexes to improve query performance. 
+* Update the schema of the database to reflect changes in the OpenAlex dataset. The previous version of the OpenAlex schema can be accessed at this link: https://gist.github.com/richard-orr/4c30f52cf5481ac68dc0b282f46f1905. The updated version of the OpenAlex schema is available at this link: https://github.com/ourresearch/openalex-documentation-scripts/blob/main/openalex-pg-schema.sql. 
+* Another area of future work that I plan to explore is the use of n-grams for full-text search on works. N-grams are groups of sequential words that occur in the text of a work and can be used to enable full-text searches on the works that have them.
+
 
 
 ## Change log
@@ -208,6 +210,4 @@ Fall 2020 (Student 3)
 ## References 
 include links related to datasets and papers describing any of the methodologies models you used. E.g. 
 
-* Dataset: https://docs.openalex.org
-* BERT paper: Jacob Devlin, Ming-Wei Chang, Kenton Lee, & Kristina Toutanova. (2019). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.
-Include a brief summary of your module here. For example: this module is responsible for classifying pieces of text using a neural network on top of BERT. 
+* OpenAlex Dataset: https://docs.openalex.org
