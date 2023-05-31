@@ -120,7 +120,7 @@ http://hawk5.csl.illinois.edu:5000/institutions?filter=country_code:!us
 #### Intersection (AND)
 By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
 Get all authors with a display name have are cited more than a number:
-http://127.0.0.1:5000/authors?filter=cited_by_count:%3E100,display_name:Kevin%20Chen-Chuan%20Chang
+http://hawk5.csl.illinois.edu:5000//authors?filter=cited_by_count:%3E100,display_name:Kevin%20Chen-Chuan%20Chang
 
 
 #### Addition (OR)
