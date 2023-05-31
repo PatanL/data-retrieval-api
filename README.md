@@ -115,7 +115,7 @@ http://hawk5.csl.illinois.edu:5000/works?filter=from_publication_date:2022-01-01
 #### Negation (NOT)
 You can negate any filter, numerical or otherwise, by prepending the exclamation mark symbol (!) to the filter value. Example:
 Get all institutions except for ones located in the US:
-http://hawk5.csl.illinois.edu:5000/institutions?filter=country_code:!us``
+http://hawk5.csl.illinois.edu:5000/institutions?filter=country_code:!us
 
 #### Intersection (AND)
 By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
