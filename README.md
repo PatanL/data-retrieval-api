@@ -173,9 +173,7 @@ http://hawk5.csl.illinois.edu:5000/works?sort=display_name
 
 
 ## Demo video
-Make sure to include a video showing your module in action and how to use it in this section. Github Pages doesn't support this so I am unable to do this here. However, this can be done in your README.md files of your own repo. Follow instructions [here](https://stackoverflow.com/questions/4279611/how-to-embed-a-video-into-github-readme-md) of the accepted answer 
-    
-https://drive.google.com/file/d/16uhJnEg4l7eiV_--1toKZ8BpzG5sELjf/view?usp=sharing
+Video link: https://drive.google.com/file/d/16uhJnEg4l7eiV_--1toKZ8BpzG5sELjf/view?usp=sharing
 
 
 ## Issues and Future Work
