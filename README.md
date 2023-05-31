@@ -120,11 +120,8 @@ http://hawk5.csl.illinois.edu:5000/institutions?filter=country_code:!us
 #### Intersection (AND)
 By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
 Get all works that have been cited more than once and are free to read:
-http://hawk5.csl.illinois.edu:5000/works?filter=cited_by_count:>1
+http://hawk5.csl.illinois.edu:5000/works?filter=cited_by_count:>100,display_name:Kevin%20Chen-Chuan%20Chang
 Get all the works that have an author from France and an author from the UK:
-
-You can repeat a filter to create an AND query within a single attribute. Example:
-Get all works that have concepts "Medicine" and "Artificial Intelligence":
 
 
 #### Addition (OR)
