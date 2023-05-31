@@ -95,9 +95,7 @@ This query returns a list of `Concept` objects.
 <details>
     <summary>Filter entity lists</summary>
 Filters narrow the list down to just entities that meet a particular condition--specifically, a particular value for a particular attribute.
-A list of filters are set using the filter parameter, formatted like this: filter=attribute:value,attribute2:value2. Examples:
-
-Get the authors whose name is John Smith:
+A list of filters are set using the filter parameter, formatted like this: filter=attribute:value,attribute2:value2. Examples: Get the authors whose name is John Smith:
 http://hawk5.csl.illinois.edu:5000/authors?filter=display_name.search:einstein
 
 Filters are case-insensitive.
