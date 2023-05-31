@@ -119,9 +119,8 @@ http://hawk5.csl.illinois.edu:5000/institutions?filter=country_code:!us
 
 #### Intersection (AND)
 By default, the returned result set includes only records that satisfy all the supplied filters. In other words, filters are combined as an AND query. Example:
-Get all works that have been cited more than once and are free to read:
-http://hawk5.csl.illinois.edu:5000/works?filter=cited_by_count:>100,display_name:Kevin%20Chen-Chuan%20Chang
-Get all the works that have an author from France and an author from the UK:
+Get all authors with a display name have are cited more than a number:
+http://127.0.0.1:5000/authors?filter=cited_by_count:%3E100,display_name:Kevin%20Chen-Chuan%20Chang
 
 
 #### Addition (OR)
@@ -137,38 +136,38 @@ http://hawk5.csl.illinois.edu:5000/works?filter=doi:https://doi.org/10.1371/jour
 
 <details>
   <summary>Search entities</summary>
-    ### The search parameter
-    
-    The search query parameter finds results that match a given text search. Example:
-    
-    Get works with search term "dna" in the title or abstract:
-    
-    http://hawk5.csl.illinois.edu:5000/works?search=dna
-    
-    When you search works, the API looks for matches in titles, abstracts, and fulltext. When you search concepts, we look in each concept's display_name and
-    description fields. When you search sources, we look at the display_name, alternate_titles, and abbreviated_title fields. Searching authors or institutions will looks for matches
-    within each entities' display_name field.
+### The search parameter
+
+The search query parameter finds results that match a given text search. Example:
+
+Get works with search term "dna" in the title or abstract:
+
+http://hawk5.csl.illinois.edu:5000/works?search=dna
+
+When you search works, the API looks for matches in titles, abstracts, and fulltext. When you search concepts, we look in each concept's display_name and
+description fields. When you search sources, we look at the display_name, alternate_titles, and abbreviated_title fields. Searching authors or institutions will looks for matches
+within each entities' display_name field.
 </details>
     
 <details>
   <summary>Sort entities</summary>
-    ### Sort entity lists
-    
-    Use the ?sort parameter to specify the property you want your list sorted by. You can sort by these properties, where they exist:
-    
-    display_name
-    
-    cited_by_count
-    
-    works_count
-    
-    publication_date
-    By default, sort direction is ascending. You can reverse this by appending :desc to the sort key like works_count:desc. You can sort by multiple properties by providing multiple sort keys, separated by commas. Examples:
-    * All works, sorted by cited_by_count (highest counts first)
-    http://hawk5.csl.illinois.edu:5000/works?sort=cited_by_count
-    
-    * All sources, in alphabetical order by title:
-    http://hawk5.csl.illinois.edu:5000/works?sort=display_name
+### Sort entity lists
+
+Use the ?sort parameter to specify the property you want your list sorted by. You can sort by these properties, where they exist:
+
+display_name
+
+cited_by_count
+
+works_count
+
+publication_date
+By default, sort direction is ascending. You can reverse this by appending :desc to the sort key like works_count:desc. You can sort by multiple properties by providing multiple sort keys, separated by commas. Examples:
+* All works, sorted by cited_by_count (highest counts first)
+http://hawk5.csl.illinois.edu:5000/works?sort=cited_by_count
+
+* All sources, in alphabetical order by title:
+http://hawk5.csl.illinois.edu:5000/works?sort=display_name
 </details>
 
 
