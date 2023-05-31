@@ -99,19 +99,18 @@ A list of filters are set using the filter parameter, formatted like this: filte
 http://hawk5.csl.illinois.edu:5000/authors?filter=display_name.search:einstein
 
 Filters are case-insensitive.
-    
-    ### Logical expressions
-    
-    #### Inequality
-    For numerical filters, use the less-than (<) and greater-than (>) symbols to filter by inequalities. Example:
-    
-    Get authors that have more than 10000 citations:
-    http://hawk5.csl.illinois.edu:5000/authors?filter=cited_by_count:>10000
-    
-    Some attributes have special filters that act as syntactic sugar around commonly-expressed inequalities: for example, the from_publication_date filter on works. See the endpoint-specific documentation below for more information. Example:
-    
-    Get all works published after 2022-01-01 (inclusive):
-    http://hawk5.csl.illinois.edu:5000/works?filter=from_publication_date:2022-01-01
+### Logical expressions
+
+#### Inequality
+For numerical filters, use the less-than (<) and greater-than (>) symbols to filter by inequalities. Example:
+
+Get authors that have more than 10000 citations:
+http://hawk5.csl.illinois.edu:5000/authors?filter=cited_by_count:>10000
+
+Some attributes have special filters that act as syntactic sugar around commonly-expressed inequalities: for example, the from_publication_date filter on works. See the endpoint-specific documentation below for more information. Example:
+
+Get all works published after 2022-01-01 (inclusive):
+http://hawk5.csl.illinois.edu:5000/works?filter=from_publication_date:2022-01-01
     
 </details>
 
