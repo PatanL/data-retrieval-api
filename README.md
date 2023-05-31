@@ -34,15 +34,15 @@ patrick-liu-academic-search/
     - scripts/
         -- create_partitioned_table.py
     - tests/
-        -- functional/
-            -- test_authors.py
-            -- test_concepts.py
-            -- test_group_by.py
-            -- test_institutions.py
-            -- test_sample.py
-            -- test_sort.py
-            -- test_sources.py
-            -- test_works.py
+        -- tests.py
+        -- test_authors.py
+        -- test_concepts.py
+        -- test_group_by.py
+        -- test_institutions.py
+        -- test_sample.py
+        -- test_sort.py
+        -- test_sources.py
+        -- test_works.py
 ```
 
 Include text description of all the important files / componenets in your repo. 
