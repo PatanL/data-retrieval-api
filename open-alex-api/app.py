@@ -454,16 +454,16 @@ def get_works():
             attr, value = filter.split(':', maxsplit=1)
             # Inequality 
             if value.startswith('<') or value.startswith('>'): 
-                where_clause += f"{attr} {value} AND "
+                where_clause += f"w.{attr} {value} AND "
             # Negation
             elif value.startswith('!'):
-                where_clause += f"{attr} != '{value[1:]}' AND "
+                where_clause += f"w.{attr} != '{value[1:]}' AND "
             # Addition
             elif '|' in value:
                 values = value.split('|')
                 where_clause += "("
                 for val in values:
-                    where_clause += f"{attr} = '{val}' OR "
+                    where_clause += f"w.{attr} = '{val}' OR "
                 # Remove the last OR
                 where_clause = where_clause[:-4]
                 where_clause += ") AND "
@@ -545,7 +545,7 @@ def get_works():
                 where_clause += f"publication_date <= '{value}' AND "
             # Default
             else:
-                where_clause += f"{attr} = '{value}' AND " 
+                where_clause += f"w.{attr} = '{value}' AND " 
         # Remove the last AND
         where_clause = where_clause[:-4]
         print("where_clause:", where_clause)
@@ -671,8 +671,8 @@ def get_works_query(where_clause='', order_clause = '', per_page=25, page=1, sam
                 LEFT JOIN openalex.works_open_access_partition woa ON w.id = woa.work_id
                 TABLESAMPLE SYSTEM ({sample})
                 {where_clause}
-                {order_clause}
-                LIMIT {per_page} OFFSET {(page - 1) * per_page}
+                ORDER BY RANDOM()
+                LIMIT {sample};
             """
 
     print("query:", query)
@@ -747,7 +747,7 @@ def get_institution(institution_id):
     cur.close()
     return jsonify(institution)
 
-def get_institutions_query(where_clause=''):
+def get_institutions_query(where_clause='', order_clause = '', per_page=25, page=1, sample=None):
     with conn.cursor() as cur:
         query = f"""
             SELECT i.id, i.ror, i.display_name, i.country_code, i.type, i.homepage_url, i.image_url, 
@@ -766,8 +766,11 @@ def get_institutions_query(where_clause=''):
             {where_clause}
             GROUP BY i.id, i.ror, i.display_name, i.country_code, i.type, i.homepage_url, i.image_url,
                     i.image_thumbnail_url, i.works_count,
-                    i.cited_by_count, works_api_url, i.updated_date;
+                    i.cited_by_count, works_api_url, i.updated_date
+            {order_clause}
+            LIMIT {per_page} OFFSET {(page - 1) * per_page};
         """
+        print("query:", query)
         cur.execute(query)
         rows = cur.fetchall()
     institutions = []
@@ -794,27 +797,53 @@ def get_institutions_query(where_clause=''):
 
 
 
-def get_concepts_query(where_clause='', per_page=25, page=1):
+def get_concepts_query(where_clause='', order_clause='', per_page=25, page=1, sample=None):
     with conn.cursor() as cur:
-        query = f"""
-            SELECT c.id, c.level, c.description, c.wikidata,
-                   c.image_url, c.image_thumbnail_url, c.works_api_url, c.updated_date,
-                   COALESCE(SUM(cc.works_count), 0) AS works_count,
-                   COALESCE(SUM(cc.cited_by_count), 0) AS cited_by_count,
-                   ARRAY_AGG(DISTINCT ac.ancestor_id) AS ancestors,
-                   ARRAY_AGG(DISTINCT rc.related_concept_id) AS related_concepts
-            FROM openalex.concepts c
-            LEFT JOIN openalex.concepts_counts_by_year cc
-                ON c.id = cc.concept_id
-            LEFT JOIN openalex.concepts_ancestors ac
-                ON c.id = ac.concept_id
-            LEFT JOIN openalex.concepts_related_concepts rc
-                ON c.id = rc.concept_id
-            {where_clause}
-            GROUP BY c.id, c.level, c.description, c.wikidata,
-                     c.image_url, c.image_thumbnail_url, c.works_api_url, c.updated_date
-            LIMIT {per_page} OFFSET {(page - 1) * per_page};
-        """
+        if sample is None:
+            query = f"""
+                SELECT c.id, c.level, c.description, c.wikidata,
+                    c.image_url, c.image_thumbnail_url, c.works_api_url, c.updated_date,
+                    COALESCE(SUM(cc.works_count), 0) AS works_count,
+                    COALESCE(SUM(cc.cited_by_count), 0) AS cited_by_count,
+                    ARRAY_AGG(DISTINCT ac.ancestor_id) AS ancestors,
+                    ARRAY_AGG(DISTINCT rc.related_concept_id) AS related_concepts
+                FROM openalex.concepts c
+                LEFT JOIN openalex.concepts_counts_by_year cc
+                    ON c.id = cc.concept_id
+                LEFT JOIN openalex.concepts_ancestors ac
+                    ON c.id = ac.concept_id
+                LEFT JOIN openalex.concepts_related_concepts rc
+                    ON c.id = rc.concept_id
+                {where_clause}
+                GROUP BY c.id, c.level, c.description, c.wikidata,
+                        c.image_url, c.image_thumbnail_url, c.works_api_url, c.updated_date
+                {order_clause}
+                LIMIT {per_page} OFFSET {(page - 1) * per_page};
+            """
+        else:
+            if sample < per_page:
+                sample = per_page
+            query = f"""
+                SELECT c.id, c.level, c.description, c.wikidata,
+                    c.image_url, c.image_thumbnail_url, c.works_api_url, c.updated_date,
+                    COALESCE(SUM(cc.works_count), 0) AS works_count,
+                    COALESCE(SUM(cc.cited_by_count), 0) AS cited_by_count,
+                    ARRAY_AGG(DISTINCT ac.ancestor_id) AS ancestors,
+                    ARRAY_AGG(DISTINCT rc.related_concept_id) AS related_concepts
+                FROM openalex.concepts c
+                LEFT JOIN openalex.concepts_counts_by_year cc
+                    ON c.id = cc.concept_id
+                LEFT JOIN openalex.concepts_ancestors ac
+                    ON c.id = ac.concept_id
+                LEFT JOIN openalex.concepts_related_concepts rc
+                    ON c.id = rc.concept_id
+                {where_clause}
+                GROUP BY c.id, c.level, c.description, c.wikidata,
+                        c.image_url, c.image_thumbnail_url, c.works_api_url, c.updated_date
+                ORDER BY RANDOM()
+                LIMIT {sample};
+            """
+        print("query:", query)
         cur.execute(query)
         results = cur.fetchall()
     concepts = []
@@ -851,19 +880,43 @@ def get_concepts():
     filter_param = request.args.get('filter')
     search_param = request.args.get('search')
     group_by_param = request.args.get('group_by')
+    where_clause = "WHERE "
     if filter_param is not None:
-        # Split the filter string into attribute and value
-        attr, value = filter_param.split(':', maxsplit=1)
-        # If the attribute is a convenience filter, translate it to the appropriate attribute
-        if attr == 'has_wikidata':
-            attr = 'wikidata IS NOT NULL'
-            where_clause = f"WHERE {attr} = '{value}'"
-        elif attr == 'display_name.search':
-            where_clause = f"WHERE display_name ILIKE '%%{value}%%'"
-            return get_concepts_query(where_clause)
-        # Build the WHERE clause using the attribute and value
-        else:
-            where_clause = f"WHERE {attr} = '{value}'"    
+        # Split by comma
+        filters = filter_param.split(',')
+        for filter in filters:
+            # Split the filter string into attribute and value
+            attr, value = filter_param.split(':', maxsplit=1)
+            # Inequality 
+            if value.startswith('<') or value.startswith('>'): 
+                where_clause += f"w.{attr} {value} AND "
+            # Negation
+            elif value.startswith('!'):
+                where_clause += f"w.{attr} != '{value[1:]}' AND "
+            # Addition
+            elif '|' in value:
+                values = value.split('|')
+                where_clause += "("
+                for val in values:
+                    where_clause += f"w.{attr} = '{val}' OR "
+                # Remove the last OR
+                where_clause = where_clause[:-4]
+                where_clause += ") AND "
+            # If the attribute is a convenience filter, translate it to the appropriate attribute
+            if attr == 'has_wikidata':
+                attr = 'wikidata IS NOT NULL'
+                where_clause += f"WHERE {attr} = '{value}' AND "
+            elif attr == 'display_name.search':
+                where_clause += f"WHERE display_name ILIKE '%%{value}%%' AND "
+                return get_concepts_query(where_clause)
+            # Build the WHERE clause using the attribute and value
+            else:
+                where_clause += f"{attr} = '{value}' AND " 
+        # Remove the last AND
+        where_clause = where_clause[:-4]
+        print("where_clause:", where_clause) 
+    if where_clause == "WHERE ":
+        where_clause = ""
     if search_param is not None:
         if where_clause:
             where_clause += f" AND display_name ILIKE '%%{search_param}%%'"
@@ -872,46 +925,82 @@ def get_concepts():
     if group_by_param:
         # if group_by_param not in ['cited_by_count', 'continent', 'country_code', 'is_global_south', 'has_ror', 'type', 'works_count']:
         #     return jsonify({"error": "Invalid group_by parameter"}), 400
-        cur.execute(f"SELECT {group_by_param}, COUNT(*) FROM openalex.institutions GROUP BY {group_by_param} ORDER BY {group_by_param} ASC")
+        cur.execute(f"SELECT {group_by_param}, COUNT(*) FROM openalex.concepts GROUP BY {group_by_param} ORDER BY {group_by_param} ASC")
         rows = cur.fetchall()
         result = []
         for row in rows:
             result.append({group_by_param: row[0], "count": row[1]})
         return jsonify(result)
-    else:
-        where_clause = ''
-    return get_concepts_query(where_clause, per_page, page)
+    order_clause = ''
+    if sort_param:
+        if sort_param not in ['works_count', 'cited_by_count']:
+            return jsonify({"error": "Invalid sort parameter"}), 400
+        order_clause = f"ORDER BY {sort_param} DESC"
+    return get_concepts_query(where_clause, order_clause, per_page, page, sample)
 
 @app.route('/institutions', methods=['GET'])
 def get_institutions():
     cur = conn.cursor()
+    fields = request.args.get('select', default = "*", type = str)
+    select_fields = fields.split(",")
+    sample = request.args.get('sample', default = None, type = int)
+    per_page = request.args.get('per-page', default = 25, type = int)
+    page = request.args.get('page', default = 1, type = int)
+    sort_param = request.args.get('sort', default = None, type = str)
     filter_param = request.args.get('filter')
     search_param = request.args.get('search')
     group_by_param = request.args.get('group_by')
-    where_clause = ''
+    where_clause = 'WHERE '
     if filter_param:
-        # Split the filter string into attribute and value
-        attr, value = filter_param.split(':', maxsplit=1)
-        # If the attribute is a convenience filter, translate it to the appropriate attribute
-        if attr == 'has_ror':
-            attr = 'ror IS NOT NULL' if value.lower() == 'true' else 'ror IS NULL'
-            where_clause = f"WHERE {attr} = '{value}'"
-            if value.lower() == 'true':
-                where_clause = f"WHERE i.ror IS NOT NULL"
+        # Split by comma to get multiple filters
+        filters = filter_param.split(',')
+        print("filters", filters)
+        for filter in filters:
+            # Split the filter string into attribute and value
+            attr, value = filter_param.split(':', maxsplit=1)
+            # Inequality 
+            if value.startswith('<') or value.startswith('>'): 
+                where_clause += f"i.{attr} {value} AND "
+            # Negation
+            elif value.startswith('!'):
+                if attr == 'country_code':
+                    # capitalization
+                    value = value.upper()
+                where_clause += f"i.{attr} != '{value[1:]}' AND "
+            # Addition
+            elif '|' in value:
+                values = value.split('|')
+                where_clause += "("
+                for val in values:
+                    if attr == 'country_code':
+                        # capitalization
+                        val = val.upper()
+                    where_clause += f"i.{attr} = '{val}' OR "
+                # Remove the last OR
+                where_clause = where_clause[:-4]
+                where_clause += ") AND "
+            # If the attribute is a convenience filter, translate it to the appropriate attribute
+            elif attr == 'has_ror':
+                if value.lower() == 'true':
+                    where_clause += f"i.ror IS NOT NULL AND "
+                else:
+                    where_clause += f"i.ror IS NULL AND "
+                # return jsonify(institutions)
+            elif attr == 'is_global_south':
+                attr = 'country_code IN (\'AF\', \'AO\', \'BD\', \'BF\', \'BI\', \'BJ\', \'BO\', \'BR\', \'BT\', \'BW\', \'CD\', \'CF\', \'CG\', \'CI\', \'CM\', \'CO\', \'CR\', \'CU\', \'DJ\', \'DO\', \'EC\', \'EG\', \'ER\', \'ET\', \'GA\', \'GH\', \'GT\', \'GW\', \'HN\', \'HT\', \'ID\', \'IN\', \'KE\', \'KH\', \'KP\', \'KR\', \'LA\', \'LK\', \'LR\', \'LS\', \'LY\', \'MA\', \'MD\', \'MG\', \'ML\', \'MM\', \'MN\', \'MZ\', \'NA\', \'NE\', \'NG\', \'NI\', \'NP\', \'PA\', \'PE\', \'PG\', \'PH\', \'PK\', \'PR\', \'PY\', \'RW\', \'SA\', \'SB\', \'SD\', \'SL\', \'SN\', \'SO\', \'SS\', \'SV\', \'SY\', \'TD\', \'TG\', \'TH\', \'TJ\', \'TL\', \'TM\', \'TN\', \'TR\', \'TZ\', \'UG\', \'UZ\', \'VE\', \'VN\', \'VU\', \'WS\', \'YE\', \'ZA\', \'ZM\', \'ZW\')'
+                where_clause += f"i.{attr} = '{value}' AND "
+            # elif attr == 'continent':
+            #     attr = f'country_code IN (\'{CONTINENTS[value]}\')'
+            elif attr == 'display_name.search':
+                where_clause += f"display_name ILIKE '%%{value}%%' AND "
+            # Build the WHERE clause using the attribute and value
             else:
-                where_clause = f"WHERE i.ror IS NULL"
-            # return jsonify(institutions)
-        elif attr == 'is_global_south':
-            attr = 'country_code IN (\'AF\', \'AO\', \'BD\', \'BF\', \'BI\', \'BJ\', \'BO\', \'BR\', \'BT\', \'BW\', \'CD\', \'CF\', \'CG\', \'CI\', \'CM\', \'CO\', \'CR\', \'CU\', \'DJ\', \'DO\', \'EC\', \'EG\', \'ER\', \'ET\', \'GA\', \'GH\', \'GT\', \'GW\', \'HN\', \'HT\', \'ID\', \'IN\', \'KE\', \'KH\', \'KP\', \'KR\', \'LA\', \'LK\', \'LR\', \'LS\', \'LY\', \'MA\', \'MD\', \'MG\', \'ML\', \'MM\', \'MN\', \'MZ\', \'NA\', \'NE\', \'NG\', \'NI\', \'NP\', \'PA\', \'PE\', \'PG\', \'PH\', \'PK\', \'PR\', \'PY\', \'RW\', \'SA\', \'SB\', \'SD\', \'SL\', \'SN\', \'SO\', \'SS\', \'SV\', \'SY\', \'TD\', \'TG\', \'TH\', \'TJ\', \'TL\', \'TM\', \'TN\', \'TR\', \'TZ\', \'UG\', \'UZ\', \'VE\', \'VN\', \'VU\', \'WS\', \'YE\', \'ZA\', \'ZM\', \'ZW\')'
-            where_clause = f"WHERE {attr} = '{value}'"
-        # elif attr == 'continent':
-        #     attr = f'country_code IN (\'{CONTINENTS[value]}\')'
-        elif attr == 'display_name.search':
-            where_clause = f"WHERE display_name ILIKE '%%{value}%%'"
-            return get_institutions_query(where_clause)
-        # Build the WHERE clause using the attribute and value
-        else:
-            where_clause = f"WHERE {attr} = '{value}'"
+                if attr == 'country_code':
+                    value = value.upper()
+                where_clause += f"i.{attr} = '{value}' AND " 
+        # Remove the last AND
+        where_clause = where_clause[:-4]
+        print("where_clause:", where_clause)
     if search_param:
         if where_clause:
             where_clause += f" AND display_name ILIKE '%%{search_param}%%'"
@@ -926,8 +1015,15 @@ def get_institutions():
         for row in rows:
             result.append({group_by_param: row[0], "count": row[1]})
         return jsonify(result)
+    order_clause = ""
+    if sort_param:
+        if sort_param not in ['cited_by_count', 'country_code', 'display_name', 'is_global_south', 'type', 'works_count']:
+            return jsonify({"error": "Invalid sort parameter"}), 400
+        order_clause = f"ORDER BY {sort_param} ASC"
+    if where_clause == "WHERE ":
+        where_clause = ""
 
-    return get_institutions_query(where_clause)
+    return get_institutions_query(where_clause, order_clause, per_page, page, sample)
 
 # get: {could not identify a comparison function for type json}, error when I include issn in the query
 def get_sources_query(where_clause = ''):
@@ -1021,4 +1117,4 @@ def autocomplete_institutions():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
