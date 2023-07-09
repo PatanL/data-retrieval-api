@@ -5,13 +5,7 @@ from sqlalchemy import text
 
 app = Flask(__name__)
 
-db_params = {
-    "host": "Hawk5.csl.illinois.edu",
-    "port": 5432,  
-    "database": "postgres",
-    "user": "pzl2",   
-    "password": "postgres"
-}
+db_params = "params"
 
 conn = psycopg2.connect(**db_params)
 
