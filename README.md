@@ -5,7 +5,14 @@
 This module is responsible for creating a relational database using Postgresql to store scholarly data from OpenAlex dataset and providing an API to access the database.
 
 ## Setup
-1. 
+
+Relational database:
+
+1. [Download the data to your machine](https://docs.openalex.org/download-all-data/download-to-your-machine)
+2. [Load the data to a relational database (PostgreSQL)](https://docs.openalex.org/download-all-data/upload-to-your-database/load-to-a-relational-database)
+3. Insert the new data into partitioned tables
+3. Reindex existing tables and create indexes on new tables. 
+
 API: 
 
 1. Install the required dependencies by running pip install -r requirements.txt.
