@@ -24,8 +24,7 @@ pip install -r requirements.txt
 3. Additionally, list any other setup required to run your module such as installing MySQL or downloading data files that you module relies on. 
 
 4. Include instructions on how to run any tests you have written to verify your module is working properly. 
-
-It is very important to also include an overall breakdown of your repo's file structure. Let people know what is in each directory and where to look if they need something specific. This will also let users know how your repo needs to structured so that your module can work properly
+Breakdown of repo's file structure:
 
 ```
 patrick-liu-academic-search/
@@ -50,10 +49,6 @@ Include text description of all the important files / componenets in your repo.
 * `src/train.py`: trains model from pre-processed data
 * `src/classify_articles/`: runs trained model on input data
 * `data/eval_artcles.csv`: articles to be classified (each row should include an 'id', and 'title')
-
-### Important 
-Go to [our shared google Drive space](https://drive.google.com/drive/folders/1rxPAdGTVcl-Xo6uuFovdKcCw5_FEaXIC?usp=sharing) and create a folder with the format `FirstnameLastName-Projectname` (e.g. `AshutoshUkey-KeywordTrie`). In here, make sure to include a zipped copy of any data files related to your module (including `.sql` dumps of necessary databases) as well as a backup zipped copy of your Github repo (i.e. all the files you upload to Github).
-
 
 
 ## Functional Design (Usage)
@@ -178,7 +173,7 @@ Video link: https://drive.google.com/file/d/16uhJnEg4l7eiV_--1toKZ8BpzG5sELjf/vi
 
 ## Issues and Future Work
 
-In this section, please list all know issues, limitations, and possible areas for future improvement. For example:
+In this section, please list all know issues, limitations, and possible areas for future improvement. 
 
 * Add multi-column indexes to improve query performance. 
 * Update the schema of the database to reflect changes in the OpenAlex dataset. The previous version of the OpenAlex schema can be accessed at this link: https://gist.github.com/richard-orr/4c30f52cf5481ac68dc0b282f46f1905. The updated version of the OpenAlex schema is available at this link: https://github.com/ourresearch/openalex-documentation-scripts/blob/main/openalex-pg-schema.sql. 
