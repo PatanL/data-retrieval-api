@@ -2,7 +2,9 @@
 
 ## Overview
 
-This module is responsible for creating a relational database using Postgresql to store scholarly data from OpenAlex dataset and providing an API to access the database.
+This module is responsible for creating a relational database using Postgresql to store scholarly data from OpenAlex dataset and providing an API to access the database. 
+
+Research Report: [https://docs.google.com/document/d/1phGEkL6pcDMjcpgeC3dl8x5AUwZItQY5QohpQXkAEsg/edit](https://docs.google.com/document/d/1phGEkL6pcDMjcpgeC3dl8x5AUwZItQY5QohpQXkAEsg/edit?usp=sharing)
 
 ## Setup
 
