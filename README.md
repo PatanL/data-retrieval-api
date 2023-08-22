@@ -6,6 +6,9 @@ This module is responsible for creating a relational database using Postgresql t
 
 Research Report: [https://docs.google.com/document/d/1phGEkL6pcDMjcpgeC3dl8x5AUwZItQY5QohpQXkAEsg/edit](https://docs.google.com/document/d/1phGEkL6pcDMjcpgeC3dl8x5AUwZItQY5QohpQXkAEsg/edit?usp=sharing)
 
+## Demo video
+Video link: https://drive.google.com/file/d/16uhJnEg4l7eiV_--1toKZ8BpzG5sELjf/view?usp=sharing
+
 ## Setup
 
 Relational database:
@@ -167,10 +170,6 @@ http://hawk5.csl.illinois.edu:5000/works?sort=cited_by_count
 http://hawk5.csl.illinois.edu:5000/works?sort=display_name
 </details>
 
-
-
-## Demo video
-Video link: https://drive.google.com/file/d/16uhJnEg4l7eiV_--1toKZ8BpzG5sELjf/view?usp=sharing
 
 
 ## Issues and Future Work
